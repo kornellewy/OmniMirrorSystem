@@ -4,4 +4,5 @@ displaytree==1.1.0
 langchain==0.3.4
 langchain-community==0.3.3
 langchain-openai==0.2.3
-directory-tree==1.0.0 
+directory-tree==1.0.0
+chromadb==0.5.0 

@@ -26,7 +26,7 @@ class DirScaner:
         """
         files_paths_with_metadata = {}
         files_paths = [
-            str(path)
+            path
             for path in dir_path.rglob("*")
             if path.is_file()
             and path.suffix in self.config["suffixes_of_documents_to_embedd"]
