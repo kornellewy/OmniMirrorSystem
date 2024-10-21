@@ -1,0 +1,2 @@
+suffixes_of_documents_to_embedd: ['.txt', '.py', '.md']
+suffixes_of_images_to_embedd: ['.jpg', '.jpeg', '.png']

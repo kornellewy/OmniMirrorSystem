@@ -1,0 +1,24 @@
+
+source: https://www.reddit.com/r/LangChain/comments/1dp7p9j/are_there_any_rag_successful_real_production_use/
+
+Have built systems, RAG needs a lot of work and RAG is unliky to be the only or the best solution. "retrieval" is the hardest part of RAG.
+
+    But there is a lot to improve about the generated recomendations, conclusions, filtering, best results, ...
+
+Yes, it is trivial to get a "working" version. Lot of work to get a "usable" product.
+
+What worked :
+
+    Using multiple retrievers.
+
+    Use LLM to process the query and identify retrievers (I.e. if Query is better served from DB, route to different code. Like if product price is already in some DB)
+
+    Combine results with Text search like Elastic Search
+
+    Use a combination of small chunks and large chunks
+
+    "Decorate" chunks with metadata as much as possible . Say if product IDs are in DB, add that info to chunk
+
+    Use PDF parsers that understand tables
+
+For your usecase, since PDFs aer 1 or 2 pages, maybe using PDF-to-Html might work. Easier to extract formatting and tables from html.

@@ -1,0 +1,3 @@
+https://www.reddit.com/r/LangChain/comments/1dp7p9j/are_there_any_rag_successful_real_production_use/
+https://arxiv.org/pdf/2312.10997v1
+https://arxiv.org/pdf/2406.04369
