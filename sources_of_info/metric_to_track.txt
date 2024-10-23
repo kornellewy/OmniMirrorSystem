@@ -1,0 +1,4 @@
+context relevance
+answer faithfulness
+context utilization
+answer completeness

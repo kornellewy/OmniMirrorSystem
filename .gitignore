@@ -163,3 +163,4 @@ cython_debug/
 
 local_test_files/
 idea/
+vector_db/

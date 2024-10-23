@@ -22,7 +22,7 @@ class Chatbot:
             )
             self.vector_db = Chroma(
                 embedding_function=embeddings,
-                persist_directory=str(Path(__file__).parent / "db"),
+                persist_directory=str(Path(__file__).parent.parent / "vector_db"),
             )
 
         self.retriever = self.vector_db.as_retriever(
@@ -52,7 +52,6 @@ class Chatbot:
         history_aware_retriever = create_history_aware_retriever(
             self.llm, self.retriever, contextualize_q_prompt
         )
-
         qa_system_prompt = (
             "You are an assistant for question-answering tasks. Use "
             "the following pieces of retrieved context to answer the "
@@ -77,10 +76,10 @@ class Chatbot:
         )
         self.chat_history = []
 
-    def get_answer(self, user_input: str) -> str:
+    def get_answer(self, user_input: str, x) -> str:
         result = self.rag_chain.invoke(
             {"input": user_input, "chat_history": self.chat_history}
         )
-        # self.chat_history.append(HumanMessage(content=f"User: {result}"))
-        # self.chat_history.append(SystemMessage(content=result["answer"]))
+        self.chat_history.append(HumanMessage(content=f"User: {result}"))
+        self.chat_history.append(SystemMessage(content=result["answer"]))
         return result["answer"]

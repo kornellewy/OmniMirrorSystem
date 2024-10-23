@@ -16,7 +16,7 @@ class ChromaWrapper:
             embeddings = OpenAIEmbeddings(model=self.config["text_embedding_model"])
             self.vector_db = Chroma(
                 embedding_function=embeddings,
-                persist_directory=str(Path(__file__).parent / "db"),
+                persist_directory=str(Path(__file__).parent.parent / "vector_db"),
             )
         else:
             pass
