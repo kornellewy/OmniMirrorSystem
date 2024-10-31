@@ -2,6 +2,8 @@ from pathlib import Path
 import time
 import os
 from typing import Tuple
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 from directory_tree import DisplayTree
 
@@ -29,7 +31,7 @@ class DirScaner:
             path
             for path in dir_path.rglob("*")
             if path.is_file()
-            and path.suffix in self.config["suffixes_of_documents_to_embedd"]
+            and path.suffix.lower() in self.config["suffixes_of_documents_to_embedd"]
         ]
         for file_path in files_paths:
             metadata = self.get_file_metadata(file_path)
@@ -38,7 +40,16 @@ class DirScaner:
         return files_paths_with_metadata
 
     def scan_dir_for_images(self, dir_path: Path) -> dict:
-        pass
+        images_paths_with_metadata = {}
+        images_paths = [
+            path
+            for path in dir_path.rglob("*")
+            if path.is_file()
+            and path.suffix.lower() in self.config["suffixes_of_images_to_embedd"]
+        ]
+        for image_path in images_paths:
+            metadata = self.get_image_metadata(str(image_path))
+            # TODO: Need to add image emebing to count tokens use, no host model avalable.
 
     def scan_dir_for_audio(self, dir_path: Path) -> dict:
         pass
@@ -90,3 +101,38 @@ class DirScaner:
             content = file.read()
             tokens = content.split()
             return len(tokens)
+
+    @staticmethod
+    def get_image_metadata(image_path: str) -> dict:
+        """
+        Extracts metadata from an image file.
+
+        :param image_path: Path to the image file.
+        :return: Dictionary containing image metadata.
+        """
+        metadata = {}
+
+        try:
+            # Open the image file
+            with Image.open(image_path) as img:
+                # Basic metadata
+                metadata["Format"] = img.format
+                metadata["Mode"] = img.mode
+                metadata["Size"] = img.size
+                metadata["Info"] = img.info
+
+                # Extract EXIF data if available
+                exif_data = img._getexif()
+                if exif_data:
+                    exif = {}
+                    for tag, value in exif_data.items():
+                        tag_name = TAGS.get(tag, tag)
+                        exif[tag_name] = value
+                    metadata["EXIF"] = exif
+                else:
+                    metadata["EXIF"] = None
+
+        except Exception as e:
+            metadata["Error"] = str(e)
+
+        return metadata

@@ -1,0 +1,25 @@
+# add rag tests from
+# https://arxiv.org/pdf/2407.11005 RAGBench
+#
+# featurs
+# dodac informacje ktore informacje sheruje i
+# mozliwosc blokowania jakis wrzucania danych na internet
+# i gdzie dokladnie idą
+# zmiany llm gdzie default jest 1 bramka
+# na web serchu tez zrobic ragfusion i
+# wersja 
+# info o updatach
+# bramka dla llm
+#
+# rag adds
+# dodaca qauery constracion dla np baz danych sql i pandas z finasami
+# multi indexing na chunku i na sumary (contex) potem do rag fusion
+# context https://www.anthropic.com/news/contextual-retrieval
+# dodac mozliwosc opensorce https://arxiv.org/pdf/2401.10225 ChatQA nvidia
+# dodac historie jako zrodlo danych dodatkowo
+# dodac mozliwosc wielu zrodel danych
+#
+# landing page
+# postawic
+# przetestowac analityke
+# zrobic trafic

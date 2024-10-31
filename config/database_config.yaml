@@ -3,3 +3,5 @@ chunk_size: 500
 chunk_overlap: 50
 search_type: "similarity"
 number_for_chank_to_retrive: 3
+# multi_query
+use_multi_query: true

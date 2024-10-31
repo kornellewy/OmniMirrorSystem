@@ -2,3 +2,4 @@ context relevance
 answer faithfulness
 context utilization
 answer completeness
+cost per answer

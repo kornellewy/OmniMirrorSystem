@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import logging
 
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -7,10 +8,18 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_anthropic import ChatAnthropic
+from langchain.retrievers.multi_query import MultiQueryRetriever
+
+logging.basicConfig()
+logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
+logging.getLogger("ChatOpenAI").setLevel(logging.INFO)
+logging.getLogger("ChatAnthropic").setLevel(logging.INFO)
 
 
 class Chatbot:
     OPENAI_MODELS_NAMES = ["text-embedding-3-small", "gpt-3.5-turbo"]
+    ANTROPIC_MODELS_NAMES = ["claude-3-haiku-20240307"]
 
     def __init__(self, chat_config: dict, database_config: dict) -> None:
         self.chat_config = chat_config
@@ -25,13 +34,25 @@ class Chatbot:
                 persist_directory=str(Path(__file__).parent.parent / "vector_db"),
             )
 
-        self.retriever = self.vector_db.as_retriever(
-            search_type=self.database_config["search_type"],
-            search_kwargs={"k": self.database_config["number_for_chank_to_retrive"]},
-        )
-
         if self.chat_config["llm_model"] in self.OPENAI_MODELS_NAMES:
-            self.llm = ChatOpenAI(model=self.chat_config["llm_model"])
+            self.llm = ChatOpenAI(
+                model=self.chat_config["llm_model"],
+                temperature=float(self.chat_config["temperature"]),
+            )
+        if self.chat_config["llm_model"] in self.ANTROPIC_MODELS_NAMES:
+            self.llm = ChatAnthropic(
+                model=self.chat_config["llm_model"],
+                temperature=float(self.chat_config["temperature"]),
+            )
+
+        if self.database_config["use_multi_query"]:
+            self.retriever = MultiQueryRetriever.from_llm(
+                retriever=self.vector_db.as_retriever(), llm=self.llm
+            )
+        else:
+            self.retriever = self.vector_db.as_retriever(
+                search_type=self.database_config["search_type"],
+            )
 
         contextualize_q_system_prompt = (
             "Given a chat history and the latest user question "
@@ -77,9 +98,10 @@ class Chatbot:
         self.chat_history = []
 
     def get_answer(self, user_input: str, x) -> str:
+        # TODO: antropic dont work
         result = self.rag_chain.invoke(
             {"input": user_input, "chat_history": self.chat_history}
         )
-        self.chat_history.append(HumanMessage(content=f"User: {result}"))
+        self.chat_history.append(HumanMessage(content=f"User: {user_input}"))
         self.chat_history.append(SystemMessage(content=result["answer"]))
         return result["answer"]

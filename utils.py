@@ -71,3 +71,61 @@ def save_openai_api_key(
     print(f"API key saved to {env_file} successfully.")
     load_dotenv()
     return "OPENAI_API_KEY saved successfully"
+
+
+def save_antropic_api_key(
+    api_key: str, env_file: str = str(Path(__file__).parent / ".env")
+):
+    """
+    Saves the provided API key as ANTHROPIC_API_KEY in the .env file.
+
+    :param api_key: The API key to save.
+    :param env_file: The path to the .env file (default is ".env").
+    """
+    # Read the existing content of the .env file
+    try:
+        with open(env_file, "r") as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        lines = []
+
+    # Check if ANTHROPIC_API_KEY already exists and replace it, otherwise append it
+    found = False
+    for i, line in enumerate(lines):
+        if line.startswith("ANTHROPIC_API_KEY="):
+            lines[i] = f"ANTHROPIC_API_KEY={api_key}\n"
+            found = True
+            break
+
+    if not found:
+        lines.append(f"ANTHROPIC_API_KEY='{api_key}'\n")
+
+    # Write the updated content back to the .env file
+    with open(env_file, "w") as file:
+        file.writelines(lines)
+
+    print(f"API key saved to {env_file} successfully.")
+    load_dotenv()
+    return "ANTHROPIC_API_KEY saved successfully"
+
+
+def format_dict(d: dict, indent: int = 4, level: int = 0) -> str:
+    formatted_str = ""
+    indent_space = " " * (indent * level)
+
+    for key, value in d.items():
+        if isinstance(value, dict):
+            formatted_str += (
+                f"{indent_space}{key}:\n{format_dict(value, indent, level + 1)}"
+            )
+        elif isinstance(value, list):
+            formatted_str += f"{indent_space}{key}:\n"
+            for item in value:
+                if isinstance(item, dict):
+                    formatted_str += format_dict(item, indent, level + 1)
+                else:
+                    formatted_str += f"{' ' * indent * (level + 1)}- {item}\n"
+        else:
+            formatted_str += f"{indent_space}{key}: {value}\n"
+
+    return formatted_str

@@ -5,3 +5,8 @@ https://arxiv.org/abs/2407.11005
 https://www.trulens.org/
 https://github.com/explodinggradients/ragas
 https://pathway.com/developers/templates/adaptive-rag
+https://www.youtube.com/watch?v=TRjq7t2Ms5I
+
+# local llms propostion
+https://huggingface.co/nvidia/Llama3-ChatQA-1.5-70B
+https://huggingface.co/nvidia/dragon-multiturn-query-encoder
